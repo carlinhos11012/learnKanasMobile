@@ -1,33 +1,39 @@
 package com.example.learnkanas.model
+import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
 
 object DataStore {
-    var kanas: MutableList<Kana> = arrayListOf()
+    var hiraganaList: MutableList<Kana> = mutableListOf()
+    var katakanaList: MutableList<Kana> = mutableListOf()
 
-    init {
-        addKana(Kana("あ", "a"))
-        addKana(Kana("え", "e"))
-        addKana(Kana("い", "i"))
-        addKana(Kana("お", "o"))
-        addKana(Kana("う", "u"))
+    fun loadKanas(context: Context) {
+        hiraganaList = loadJson(context, "hiragana.json")
+        katakanaList = loadJson(context, "katakana.json")
     }
 
-    fun getKana(position: Int): Kana{
-        return kanas[position]
+    private fun loadJson(context: Context, fileName: String): MutableList<Kana> {
+        val inputStream = context.assets.open(fileName)
+        val reader = InputStreamReader(inputStream)
+        val type = object : TypeToken<List<Kana>>() {}.type
+        return Gson().fromJson(reader, type)
     }
 
-    fun addKana(kana: Kana) {
-        kanas.add(kana)
+    fun getKana(listType: String, position: Int): Kana {
+        return when (listType) {
+            "hiragana" -> hiraganaList[position]
+            "katakana" -> katakanaList[position]
+            else -> throw IllegalArgumentException("Invalid list type")
+        }
     }
 
-    fun editKana(position: Int, kana: Kana){
-        kanas[position] = kana
+    fun getSize(listType: String): Int {
+        return when (listType) {
+            "hiragana" -> hiraganaList.size
+            "katakana" -> katakanaList.size
+            else -> throw IllegalArgumentException("Invalid list type")
+        }
     }
 
-    fun removeKana(position: Int){
-        kanas.removeAt(position)
-    }
-
-    fun getSize(): Int{
-        return kanas.size
-    }
 }
