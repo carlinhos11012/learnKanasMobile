@@ -47,6 +47,11 @@ class MainActivity : AppCompatActivity() {
                     updateUIWithRandomKana()
                     true
                 }
+                R.id.nav_mixed -> {
+                    listType = "mixed"
+                    updateUIWithRandomKana()
+                    true
+                }
                 else -> false
             }
         }
