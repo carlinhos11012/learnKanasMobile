@@ -7,10 +7,13 @@ import java.io.InputStreamReader
 object DataStore {
     var hiraganaList: MutableList<Kana> = mutableListOf()
     var katakanaList: MutableList<Kana> = mutableListOf()
+    var mixedList: MutableList<Kana> = mutableListOf()
 
     fun loadKanas(context: Context) {
         hiraganaList = loadJson(context, "hiragana.json")
         katakanaList = loadJson(context, "katakana.json")
+        mixedList.addAll(hiraganaList)
+        mixedList.addAll(katakanaList)
     }
 
     private fun loadJson(context: Context, fileName: String): MutableList<Kana> {
@@ -24,6 +27,7 @@ object DataStore {
         return when (listType) {
             "hiragana" -> hiraganaList[position]
             "katakana" -> katakanaList[position]
+            "mixed" -> mixedList[position]
             else -> throw IllegalArgumentException("Invalid list type")
         }
     }
@@ -32,6 +36,7 @@ object DataStore {
         return when (listType) {
             "hiragana" -> hiraganaList.size
             "katakana" -> katakanaList.size
+            "mixed" -> katakanaList.size + hiraganaList.size
             else -> throw IllegalArgumentException("Invalid list type")
         }
     }
