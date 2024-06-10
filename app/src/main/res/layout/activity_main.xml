@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,11 +11,12 @@
     <LinearLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:paddingTop="100dp"
+        android:paddingTop="50dp"
         android:paddingBottom="56dp"
-        android:layout_above="@id/bottom_navigation"> <!-- Certifica-se de que o layout está acima do BottomNavigationView -->
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation">
 
         <TextView
             android:layout_width="match_parent"
@@ -25,59 +26,85 @@
             android:padding="5dp"
             android:layout_marginVertical="10dp"
             android:textStyle="bold"
-            android:text="Learn Kanas" />
+            android:text="@string/title" />
 
-        <LinearLayout
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:background="@color/lighBlue"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="100dp"
-            android:textStyle="bold"
-            android:text="placeholder"
-            android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/portugueseView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="A"
-            android:gravity="center|top"
-            android:textSize="30dp"
-            android:textStyle="bold"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/kana_container"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:background="@color/lighBlue"
+                android:gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/kanaView"
+                <TextView
+                    android:id="@+id/portugueseView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center|top"
+                    android:text="@string/portuguese_placeHolder"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/kanaView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/kanaView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/hiragana_placeHolder"
+                    android:textSize="100sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/helpButton"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="33dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/helpButtonInfo"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_help"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/kanaView"
+                    app:layout_constraintVertical_bias="0.975" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:textSize="100dp"
-            android:textStyle="bold"
-            android:text="あ"
-            android:gravity="center"/>
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"/>
-
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Enviar"
-            android:layout_gravity="center_horizontal" />
+            android:layout_margin="10dp"
+            android:autofillHints=""
+            android:inputType="text"
+            tools:ignore="LabelFor" />
     </LinearLayout>
 
     <!-- BottomNavigationView na parte inferior da tela -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
-    android:id="@+id/bottom_navigation"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    app:menu="@menu/bottom_navigation_menu" />
-
-</RelativeLayout>
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

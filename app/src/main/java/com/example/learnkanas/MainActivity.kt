@@ -2,11 +2,14 @@ package com.example.learnkanas
 
 import android.os.Bundle
 import android.provider.ContactsContract.Data
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.learnkanas.databinding.ActivityMainBinding
 import com.example.learnkanas.model.DataStore
 import com.example.learnkanas.model.Kana
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private val datastore = DataStore
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -46,16 +50,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.submitButton.setOnClickListener {
-            val input = binding.input.text.toString()
-            binding.input.text.clear()
-            if (randomKana.portuguese == input) {
-                updateUIWithRandomKana()
-                Toast.makeText(this, "Parabéns", Toast.LENGTH_LONG).show()
-            } else {
-                binding.portugueseView.visibility = View.VISIBLE
-                Toast.makeText(this, "Errou", Toast.LENGTH_LONG).show()
+        binding.input.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (randomKana.portuguese == binding.input.text.toString()) {
+                    updateUIWithRandomKana()
+                    binding.input.text.clear()
+                }
             }
+        })
+
+        binding.helpButton.setOnClickListener {
+            binding.input.text.clear()
+            binding.portugueseView.visibility = View.VISIBLE
         }
     }
 

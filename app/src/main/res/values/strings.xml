@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">LearnKanas</string>
+    <string name="title">Learn Kanas</string>
+    <string name="portuguese_placeHolder">A</string>
+    <string name="hiragana_placeHolder">あ</string>
+    <string name="helpButtonInfo">Button to help user, giving the answer</string>
 </resources>
