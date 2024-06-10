@@ -1,25 +1,26 @@
 package com.example.learnkanas
 
 import android.os.Bundle
-import android.provider.ContactsContract.Data
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageButton
+import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.learnkanas.databinding.ActivityMainBinding
 import com.example.learnkanas.model.DataStore
 import com.example.learnkanas.model.Kana
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var randomKana: Kana
+    private lateinit var answer: String
+    private var randomKanaList = mutableListOf<Kana>()
+    private var level = 1
     private var listType = "hiragana"
     private val datastore = DataStore
 
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                if (randomKana.portuguese == binding.input.text.toString()) {
+                if (binding.input.text.toString() == answer) {
                     updateUIWithRandomKana()
                     binding.input.text.clear()
                 }
@@ -65,15 +66,63 @@ class MainActivity : AppCompatActivity() {
 
         binding.helpButton.setOnClickListener {
             binding.input.text.clear()
-            binding.portugueseView.visibility = View.VISIBLE
+            showAllPortugueseViews()
         }
+
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                level = progress + 1
+                binding.difficultyLevel.text = "Dificuldade: $level"
+                updateUIWithRandomKana()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        // Inicializa com o nível de dificuldade padrão
+        updateKanaViews(level)
     }
 
     // Função para atualizar a interface do usuário com um novo randomKana
     fun updateUIWithRandomKana() {
-        randomKana = datastore.getKana(listType, (0 until datastore.getSize(listType)).random())
-        binding.kanaView.text = randomKana.kana
-        binding.portugueseView.text = randomKana.portuguese
-        binding.portugueseView.visibility = View.GONE
+        randomKanaList.clear()
+        answer = ""
+        repeat(level) {
+            randomKanaList.add(datastore.getKana(listType, (0 until datastore.getSize(listType)).random()))
+        }
+        updateKanaViews(level)
+    }
+
+    private fun updateKanaViews(level: Int) {
+        // Limpa todas as views de kana antes de adicionar novas
+        binding.kanaContainer.removeAllViews()
+
+        val inflater = LayoutInflater.from(this)
+
+        for (i in 0 until level) {
+            val kanaView = inflater.inflate(R.layout.item_kana, binding.kanaContainer, false)
+
+            val portugueseView = kanaView.findViewById<TextView>(R.id.portugueseView)
+            val kanaTextView = kanaView.findViewById<TextView>(R.id.kanaView)
+
+            val kana = randomKanaList[i]
+            answer += kana.portuguese
+            portugueseView.text = kana.portuguese
+            kanaTextView.text = kana.kana
+            portugueseView.visibility = View.GONE
+
+            binding.kanaContainer.addView(kanaView)
+        }
+    }
+
+    // Função para exibir todos os portugueseView quando o botão de ajuda é pressionado
+    private fun showAllPortugueseViews() {
+        for (i in 0 until binding.kanaContainer.childCount) {
+            val kanaView = binding.kanaContainer.getChildAt(i)
+            val portugueseView = kanaView.findViewById<TextView>(R.id.portugueseView)
+            portugueseView.visibility = View.VISIBLE
+        }
     }
 }
